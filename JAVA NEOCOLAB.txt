@@ -1,0 +1,2258 @@
+//				JDBC
+
+//Create a class Stall with the following private attributes
+
+import java.sql.*;
+import java.util.Scanner;
+
+class Stall{
+	int id;
+	String name;
+	Double deposit;
+	
+	public Stall() {
+		super();
+	}
+
+	public Stall(int id, String name,Double deposit) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.deposit = deposit;
+	}
+	
+}
+
+
+class StallBO {
+	public Stall getStall(int id) throws Exception {
+        String url="jdbc:mysql://localhost/ri_db";
+		String username ="test";
+		String password ="test123";
+		Class.forName("com.mysql.jdbc.Driver");
+		String query = "select *from Stall where id="+id;
+		
+		Connection con = DriverManager.getConnection(url,username,password);
+		Statement st = con.createStatement();
+		ResultSet rs =st.executeQuery(query);
+		
+		rs.next();
+		String name = rs.getString(2);
+		Double deposit =rs.getDouble(3);
+		Stall s = new Stall();
+		s.id=id;
+		s.name=name;
+		s.deposit=deposit;
+		return s;
+	}
+}
+
+class Main {
+	public static void main(String args[]) throws Exception {
+		StallBO sbo = new StallBO();
+		Scanner sc = new Scanner(System.in);
+		int id = Integer.parseInt(sc.nextLine());
+		
+		Stall S1 = sbo.getStall(id);
+		System.out.format("%-10s %-10s %-10s\n","ID","Name","Deposit");
+		System.out.format("%-10s %-10s %-10s\n",S1.id,S1.name,S1.deposit);
+				
+	}
+
+}
+
+--------------------------------------------------------------
+
+//Write a Java (JDBC) program to connect with MySQL database and check whether the given user name and password are valid. Display Login Successful or Invalid username/password based on the user input.
+
+
+import java.sql.*;
+import java.util.Scanner;
+ class LoginValidation {
+	public static void main(String args[]) throws Exception {
+		String url="jdbc:mysql://localhost/ri_db";
+		String username ="test";
+		String password ="test123";
+		String query = "select *from userdetails where user_name=?";
+		Scanner sc = new Scanner(System.in);
+		
+		String user_name = sc.nextLine();
+		String pass_word =sc.nextLine();
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection con = DriverManager.getConnection(url,username,password);
+		PreparedStatement st = con.prepareStatement(query);
+		st.setString(1, user_name);
+		ResultSet rs = st.executeQuery();
+		rs.next();
+		//System.out.println(rs.getString(2));
+		if(rs.getString(2).equals(pass_word)) {
+			System.out.println("Login Successful");
+		}
+		else
+			System.out.println("Invalid username/password");
+		}
+}
+
+
+
+---------------------------------------------------------------------
+
+//Write a Java (JDBC) program to connect with MySQL database and display the student details based on the user input. Display student ID and Name as shown in the sample output.
+
+import java.sql.*;
+import java.util.Scanner;
+ class Employee  {
+	public static void main(String args[]) throws Exception {
+		String url="jdbc:mysql://localhost/ri_db";
+		String username ="test";
+		String password ="test123";
+		String query = "select *from student where dept=?";
+		Scanner sc = new Scanner(System.in);
+		
+		String dept=sc.nextLine();
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection con = DriverManager.getConnection(url,username,password);
+		PreparedStatement st = con.prepareStatement(query);
+		st.setString(1,dept);
+		ResultSet rs = st.executeQuery();
+		
+		while(rs.next()) {
+			System.out.println(rs.getInt(1)+" "+rs.getString(2));
+		}
+	}
+}
+
+
+-----------------------------------------------------------------------
+
+//As a teacher, I need to remove a few students from the database and check other students' details. So, write a Java (JDBC) program to connect with MySQL database and display the student details after deleting the given student list.
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Scanner;
+
+class RowDelete{
+	public static void main(String args[]) throws Exception{
+		String url="jdbc:mysql://localhost/ri_db";
+		String username ="test";
+		String password ="test123";
+		String query = "delete from student where dept =? AND cgpa > ?;";
+		
+		Scanner sc =new Scanner(System.in);
+		
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection con = DriverManager.getConnection(url,username,password);
+		PreparedStatement st = con.prepareStatement(query);
+		
+		
+		
+			String dept =sc.nextLine();
+			double  cgpa= Double.parseDouble(sc.nextLine());
+			st.setString(1,dept);
+			st.setDouble(2,cgpa);
+			st.execute();
+		
+		
+		ResultSet rs =  st.executeQuery("select *from student");
+		while(rs.next()) {
+			System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4)+" "+rs.getString(5)+" "+rs.getString(6)+" "+rs.getString(7)+" "+rs.getString(8)+" "+rs.getString(9));
+		}
+		st.close();
+		con.close();
+	}
+}
+
+-----------------------------------------------------------------------
+
+//As a principal of the college, I need to find the faculty details based on their gender and department. So, write a Java (JDBC) program to connect with MySQL database and display the faculty details based on the input.
+
+import java.sql.*;
+import java.util.Scanner;
+ class Employee  {
+	public static void main(String args[]) throws Exception {
+		String url="jdbc:mysql://localhost/ri_db";
+		String username ="test";
+		String password ="test123";
+		String query = "select *from employee where gender=? AND dept=?";
+		Scanner sc = new Scanner(System.in);
+		
+		String gender = sc.nextLine();
+		String dept=sc.nextLine();
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection con = DriverManager.getConnection(url,username,password);
+		PreparedStatement st = con.prepareStatement(query);
+		st.setString(1,gender);
+		st.setString(2,dept);
+		ResultSet rs = st.executeQuery();
+		
+		while(rs.next()) {
+			System.out.println("Employee ID : "+rs.getInt(1)+" Name : "+rs.getString(3)+" "+rs.getString(4));
+		}
+	}
+}
+
+
+
+#########################################################
+
+//			COLLECTIONS		
+
+//A Student class is given with the following properties with appropriate getters, setters, and toString overridden method
+
+//header given
+class Sortbyname implements Comparator<Student>{
+    public int compare(Student s1,Student s2){
+        return s1.name.compareTo(s2.name);
+    }
+}
+class Sortbyroll implements Comparator<Student>{
+    public int compare(Student s1,Student s2){
+        if(s1.rollno==s2.rollno)
+            return 0;
+        else if(s1.rollno>s2.rollno)
+            return 1;
+        else
+            return -1;
+    }
+}
+class SortbyRank implements Comparator<Student>{
+    public boolean d=false;
+    public SortbyRank(boolean ds){
+        this.d=ds;
+    }
+    public int compare(Student s1,Student s2){
+        if(d){
+            if(s1.rank==s2.rank)
+                return 0;
+            else if(s1.rank>s2.rank)
+                return 1;
+            else
+                return -1;
+        }
+        else{
+            if(s1.rank==s2.rank)
+                return 0;
+            else if(s1.rank>s2.rank)
+                return -1;
+            else
+                return 1;
+        }
+    }
+}
+//footer given 
+
+------------------------------------------------------------
+
+//Frequency()  While entering user names, We have to be very careful about the duplicate entries in the list.  To make a correct and perfect report, we have to remove the duplicate elements in the list. Write a program that obtains a set of names and a search element and prints its frequency.
+
+import java.util.*;
+class Main{
+    public static void main(String[] args){
+        Scanner sc=new Scanner(System.in);
+        ArrayList<String>s=new ArrayList<>();
+        int n=sc.nextInt();
+        sc.nextLine();
+        for(int i=0;i<n;i++){
+            String np=sc.nextLine();
+            s.add(np);
+        }
+        String st=sc.nextLine();
+        System.out.println(Collections.frequency(s,st));
+    }
+}
+
+------------------------------------------------------------
+
+//sort() a List of Objects  Write a program to take hall objects as input in the list and sort them in the order of their costPerDay using sort() method of the comparable interface. Then display them in tabular form.
+
+import java.util.*;
+class Hall{
+    String name;
+    String no;
+    double ph;
+    String own;
+    Hall(String name,String pn,double ph,String own){
+        this.name=name;
+        this.no=pn;
+        this.ph=ph;
+        this.own=own;
+    }
+}
+class HallComp implements Comparator<Hall>{
+    public int compare(Hall s1,Hall s2){
+        if(s1.ph>s2.ph)
+            return 1;
+        else if(s1.ph==s2.ph)
+            return 0;
+        else
+            return -1;
+    }
+}
+class Main{
+    public static void main(String[] args){
+        Scanner sc=new Scanner(System.in);
+        int i;
+        ArrayList<Hall> s= new ArrayList<Hall>();
+        int n=sc.nextInt();
+        sc.nextLine();
+        for(i=0;i<n;i++){
+            String sv=sc.nextLine();
+            String h=sc.nextLine();
+            double ps=sc.nextDouble();
+            sc.nextLine();
+            String hw=sc.nextLine();
+            s.add(new Hall(sv,h,ps,hw));
+        }
+        Collections.sort(s,new HallComp());
+        for(Hall hall : s){
+            System.out.printf("%-15s%-15s%-15s%-15s",hall.name,hall.no,hall.ph,hall.own);
+            System.out.println();
+        }
+    }
+}
+
+#########################################################
+
+
+//					HASH SET
+
+//Input a string with possibly repeated words separated by spaces. Print a count of unique words in the string using HashSet as an implementation of Set.
+
+
+import java.util.*;
+class UniqueWords{
+    public static void main(String[] args){
+        Scanner sc=new Scanner(System.in);
+        String a=sc.nextLine();
+        Set<String> set=new HashSet<>(Arrays.asList(a.split("\\s+")));
+        System.out.print(set.size());
+    }
+}
+
+----------------------------------------------------------------
+
+//Input two lines of text with multiple words separated by spaces. Using HashSet as an implementation of Set, print the set of words found in both lines.
+
+import java.util.*;
+class CommonWords{
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        String a=sc.nextLine();
+        String b=sc.nextLine();
+        Set<String> set1=new HashSet<>(Arrays.asList(a.split("\\s+")));
+        Set<String> set2=new HashSet<>(Arrays.asList(b.split("\\s+")));
+        set1.retainAll(set2);
+        System.out.print(set1);
+    }
+}
+
+-------------------------------------------------------------------
+
+//Write a program to check if an element exists in the HashSet.
+
+import java.util.*;
+class HashSetContains{ 
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        Set<String> set=new HashSet<>(); 
+        for(int i=0;i<n;i++){ 
+            set.add(sc.next()); 
+        }
+        String answer=sc.next(); 
+        if(set.contains(answer)){
+            System.out.print(answer+" is in the hash set.");
+        }
+        else{
+            System.out.print(answer+" is not in the hash set.");
+        }
+    }
+}
+
+######################################################################
+
+//				ARRAY LIST
+
+//Create a class ArrayListMain and in the main method get the names and store them in an ArrayList. After getting all the names, just display them in the same order.
+
+import java.util.*;
+class Main
+{
+    public static void main(String[] args)
+    {
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        sc.nextLine();
+        ArrayList<String> names=new ArrayList<String>();
+        for(int i=0;i<n;i++)
+        {
+            String nm=sc.nextLine();
+            names.add(nm);
+        }
+        System.out.println(names);
+    }
+}
+
+--------------------------------------------------------------
+
+//Using Java Library ArrayList as a List implementation, create a normal 52-card deck with "Spades", "Hearts", "Diamonds", "Clubs" as suit names and "Ace", "2", "3", "4","5", "6", "7", "8", "9", "10", "Jack", "Queen", "King" as rank names. Write a program that takes as input: (1) the number of hands to deal with and (2) the number of cards in each hand and generates required hands with pseudo-random output, using Java Library Random with seed as 0, to shuffle the cards.
+
+ 					
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+class Q03Complex_List {
+    public static void main(String[] args) {
+		Scanner input = new Scanner(System. in);
+		int numHands = input. nextInt();
+		int cardsPerHand = input. nextInt();
+		if (numHands < 1 || cardsPerHand < 1) return;
+        String[] suit = new String[] {
+            "Spades", "Hearts", "Diamonds", "Clubs" 
+        };
+        String[] rank = new String[] {
+            "Ace", "2", "3", "4",
+            "5", "6", "7", "8", "9", "10", 
+            "Jack", "Queen", "King" 
+        };
+        List<String> deck = new ArrayList<String>();
+        for (int i = 0; i < suit.length; i++)
+            for (int j = 0; j < rank.length; j++)
+                deck.add(rank[j] + " of " + suit[i]);
+        Collections.shuffle(deck, new Random(0));
+        if (numHands * cardsPerHand > deck.size()) {
+            System.out.println("Not enough cards.");
+            return;
+        }
+    
+        for (int i = 0; i < numHands; i++)
+            System.out.println(dealHand(deck, cardsPerHand));
+    }
+    public static List<String> dealHand(List<String> deck, int n) {
+        int deckSize = deck.size();
+        List<String> handView = deck.subList(deckSize - n, deckSize);
+        List<String> hand = new ArrayList<String>(handView);
+        handView.clear();
+        return hand;
+    }
+}
+
+----------------------------------------------------------------------
+
+//Using Java Library ArrayList as a List Interface implementation, input N integers from standard input and add to the list only if they form an increasing sequence.
+
+import java.util.*;
+class Main
+{
+    public static void main(String[] args)
+    {
+        Scanner sc=new Scanner(System.in);
+        int x=0;
+        int n=sc.nextInt();
+        sc.nextLine();
+        ArrayList<Integer> arr=new ArrayList<Integer>(n);
+        for(int i=0;i<n;i++)
+        {
+            int p=sc.nextInt();
+            if(i==0)
+            {
+                arr.add(p);
+                x++;
+            }
+            else if(p>arr.get(x-1))
+            {
+                arr.add(p);
+                x++;
+            }
+        }
+        System.out.println(arr);
+    }
+}
+
+--------------------------------------------------------------------------
+
+//contains() & indexOf() methods in ArrayList  Write a program to get the hall name details and store them in the ArrayList and search the hall and display its position details.  Get hall names in the Main class and store them in an ArrayList. Hall number is nothing but the position at which the hall is present in the list starting from 0.
+
+import java.util.*;
+class Main
+{
+    public static void main(String[] args)
+    {
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        sc.nextLine();
+        ArrayList<String> stall_name=new ArrayList<String>();
+        for(int i=0;i<n;i++)
+        {
+            String str=sc.nextLine();
+            stall_name.add(str);
+        }
+        String name=sc.nextLine();
+        if(stall_name.contains(name))
+        {
+            System.out.println(stall_name.indexOf(name));
+        }
+        else
+        {
+            System.out.println(name+" hall is not found");
+        }
+    }
+}
+
+
+---------------------------------------------------------------------
+
+//List remove() and isEmpty() Use remove() and isEmpty() methods of the ArrayList API and implement them in our application. let's experiment with the Hall class for performing these methods.
+
+import java.util.*;
+class Main
+{
+    public static void main(String[] args)
+    {
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        ArrayList<String> vi=new ArrayList<>();
+        ArrayList<String> vi1=new ArrayList<>();
+        ArrayList<Double> vi2=new ArrayList<>();
+        ArrayList<String> vi3=new ArrayList<>();
+        sc.nextLine();
+        try{
+            for(int i=0;i<n;i++)
+            {
+                String pl=sc.nextLine();
+                String pl1=sc.nextLine();
+                double pl2=sc.nextDouble();
+                sc.nextLine();
+                String pl3=sc.nextLine();
+                vi.add(pl);
+                vi1.add(pl1);
+                vi2.add(pl2);
+                vi3.add(pl3);
+            }
+            int rm=sc.nextInt();
+            vi.remove(rm);
+            vi1.remove(rm);
+            vi2.remove(rm);
+            vi3.remove(rm);
+            System.out.println("Name                Contact Number      CostperDay          Owner Name");
+            for(int i=0;i<n;i++)
+            {
+                System.out.printf("%-20s%-20s%-20s%-20s",vi.get(i),vi1.get(i),vi2.get(i),vi3.get(i));
+                System.out.println();
+            }
+        }
+        catch(Exception e)
+        {
+            if(vi.isEmpty())
+            {
+                System.out.println("The list is empty");
+            }
+        }
+    }
+}
+
+---------------------------------------------------------------------
+
+//ArrayList - Introduction  Arrays are of fixed size and are difficult to use compared to collections. So we are gonna move into collections. The basic collection is a list. Now let us try out basic ArrayList.
+
+import java.util.*;
+class Main
+{
+    public static void main(String[] args)
+    {
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        sc.nextLine();
+        ArrayList<String> names=new ArrayList<String>();
+        for(int i=0;i<n;i++)
+        {
+            String nm=sc.nextLine();
+            names.add(nm);
+        }
+        System.out.println(names);
+    }
+}
+
+
+######################################################################
+
+
+//					Thread
+
+
+//Write a program to implement multithreading that extends the Object class and implements the Runnable interface.
+
+// class multithreading implements runnable
+import java.util.Scanner;
+class MultithreadingTest implements Runnable {
+  public void run()
+  {
+    try {
+      // Displaying the running Thread
+      System.out.println(
+        "Thread " + Thread.currentThread().getId()
+        + " is running");
+    }
+    catch (Exception e) {
+      // exception is caught if occurred 
+      System.out.println("Exception has occurred and is caught");
+    }
+  }
+}
+
+
+class Main {
+  public static void main(String[] args)
+  {
+    //int n = 6;// Number of threads
+    
+    Scanner sc =new Scanner(System.in);
+	int n=Integer.parseInt(sc.nextLine());
+    for (int i = 0; i < n; i++) {
+      Thread obj = new Thread(new MultithreadingTest());
+      obj.start();
+    }
+  }
+}
+
+
+---------------------------------------------------------------
+
+
+//Create a program that employs the multithreading paradigm to implement the factorial number.
+
+import java.util.*;
+class Multiple implements Runnable
+{
+int n;
+public Multiple(int n)
+{
+this.n = n;
+}
+public void run()
+{
+for(int i =1 ;i<=n;i++ )
+{ if(i==(int)(n/2))
+{
+try { Thread.sleep(1000);
+}
+catch(Exception e)
+{}
+}
+int c; c=Multiple(n,i); if(c==0)
+System.out.println(n+" is divisible by "+i);
+ }
+}
+public int Multiple(int n,int i)
+{
+if(n%i==0) return 0; else return 1;
+}
+}
+class Fact implements Runnable
+{
+
+int n;
+public Fact(int n)
+{
+this.n = n;
+}
+public void run() {
+for(int i =1 ;i<=n;i++ )
+
+{
+System.out.println("Factorial : "+i+"! = "+fact(i)); try {
+Thread.sleep(1000);
+}
+catch(Exception e)
+{
+}
+
+}
+}
+public int fact(int n)
+{
+
+if(n==1) return 1;
+else return(fact(n-1)*n);
+}
+}
+class Main
+{
+public static void main(String args[])
+{
+Scanner sc = new Scanner(System.in); 
+
+Thread T1 = new Thread(new Multiple(sc.nextInt()));
+
+Thread T2 = new Thread(new Fact(sc.nextInt()));
+T1.start();
+T2.start();
+
+}
+}
+
+
+---------------------------------------------------------------
+
+//Write a program to implement multithreading using the join(), isAlive() and sleep() methods.
+
+
+import java.util.Scanner;
+class A implements Runnable
+{
+	String name;
+	Thread t;
+
+	A( String tname )
+	{
+		name = tname;
+		t = new Thread( this, name );
+		t.start();
+	}
+
+	public void run()
+	{
+		try
+		{
+            Scanner sc =new Scanner(System.in);
+	        int n=Integer.parseInt(sc.nextLine());
+    		for( int i=1 ; i<=n ; i++ )
+			{
+				System.out.println( name + " = " + i );
+				Thread.sleep( 300 );
+			}
+			System.out.println( "END OF = " + name );
+		}
+		catch( Exception e )
+		{ }
+	}
+} 
+
+class Main
+{
+	public static void main( String args[ ] )
+	{
+		A nt1 = new A( "Thread" );
+		System.out.println( "Thread is alive :: " + nt1.t.isAlive() );
+
+	
+		try
+		{
+			nt1.t.join();
+	
+		}
+		catch( Exception e )
+		{  }
+		
+		System.out.println( "Thread is alive = " + nt1.t.isAlive() );
+
+		
+		System.out.println( "End of main." );
+	}
+}
+
+-------------------------------------------------------------------------------
+
+//Write a program to implement suspend and resume threads using the wait() and notify() methods.
+
+
+import java.util.Scanner;
+class Resource
+{
+	int n = -1;
+	boolean flag = true;
+
+	synchronized void produce( int a )
+	{
+		while( !flag )
+		{
+			try
+			{
+				wait();
+			}
+			catch( InterruptedException e )  {   }
+		}
+		n = a;
+		System.out.println( " Producer ::: " + n );	
+		flag = false;
+		notify();
+	}
+
+	synchronized int consume()
+	{
+		while( flag )
+		{
+			try
+			{
+				wait();
+			}
+			catch( InterruptedException e )  {   }
+		}
+		flag = true;
+		notify();
+		System.out.println( " Consumer ::: " + n );
+		return n;
+	}
+}
+
+class Producer implements Runnable
+{
+	Resource s;
+	Thread t;
+	
+	Producer( Resource r )
+	{
+		s = r;		
+		t = new Thread( this, "Producer");
+		t.start();
+	}
+
+	public void run()
+	{
+	    Scanner sc =new Scanner(System.in);
+	    int n=Integer.parseInt(sc.nextLine());
+		for( int i=1 ; i<=n ; i++ )
+		{
+			try
+			{
+				Thread.sleep( 300 );
+			}
+			catch( InterruptedException e )  {   }
+			s.produce( i );
+		}
+		System.out.println( " Producer Terminating. " );
+	}
+}
+
+class Consumer implements Runnable
+{
+	Resource s;
+	Thread t;
+	
+	Consumer( Resource r )
+	{
+		s = r;		
+		t = new Thread( this, "Consumer");
+		t.start();
+	}
+
+	public void run()
+	{
+		int i;
+		do
+		{
+			try
+			{
+				Thread.sleep( 300 );
+			}
+			catch( InterruptedException e )  {   }
+			i = s.consume();
+		}while( i != 1000 );
+		System.out.println("Consumer Terminating. " );
+	}
+}
+
+class Main
+{
+	public static void main(String args[ ])
+	{
+		Resource r = new Resource();
+		new Producer( r );
+		new Consumer( r );
+	}
+}
+
+
+
+##################################################################################
+
+
+//						Exception
+
+//User defined Exception Sometimes, the built-in exceptions in Java are not able to describe a certain situation. In such cases, user can also create exceptions which are called ‘user-defined Exceptions’. Create a class Bank with the following private attributes and Create class BankBO with the following method.
+
+
+import java.io.*;
+import java.util.*;
+class Bank {
+	private int accno; 
+    private String name;
+    private double bal;
+ public Bank() {  
+    this.accno = 0;
+    this.name = null;
+    this.bal = (double)0;
+    } 
+  
+ public Bank(int accno, String name,double bal) {
+    	this.accno = accno;
+        this.name = name;
+        this.bal = bal;
+    	}
+
+public int getAccno() {
+	return accno;
+}
+
+public void setAccno(int accno) {
+	this.accno = accno;
+}
+
+public String getName() {
+	return name;
+}
+
+public void setName(String name) {
+	this.name = name;
+}
+
+public double getBal() {
+	return bal;
+}
+
+public void setBal(double bal) {
+	this.bal = bal;
+}
+public String toString() {
+	return accno+" "+name+" "+bal;
+}
+}
+class BankBO {
+ public void validate(Bank b) throws InvalidBalanceException {
+	 if(b.getBal() < 1000) {
+		 throw new InvalidBalanceException("Balance is less than 1000");
+	 }
+ }
+}
+class InvalidBalanceException extends Exception {
+public InvalidBalanceException(String s) {
+	System.out.println(s);
+}
+}
+class Main {
+public static void main(String [] args) {
+	Scanner sc = new Scanner(System.in);
+	Bank b = new Bank();
+	b.setAccno(Integer.parseInt(sc.nextLine()));
+	b.setName(sc.nextLine());
+	b.setBal(Double.parseDouble(sc.nextLine()));
+	BankBO bbo = new BankBO();
+	try {
+		bbo.validate(b);
+		System.out.println(b);
+	}
+	catch(Exception e) {
+		System.out.println(e);
+	}
+}
+}
+
+
+------------------------------------------------------------------------
+
+
+//ArrayIndexOutOfBoundsException: The prominent exception which you will see is ArrayIndexOutOfBoundsException. It occurs when the program try to access the array beyond its size. As we know arrays have fixed size. So when you try to use array beyond its size it throws this exception. Let's try to handle this exception. Get an Array of size N and get an index, then print the Array[index]. If the index is greater or equal to array size(N), then print the Exception.
+
+import java.io.*;
+import java.util.*;
+class Main {
+public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+	try{
+		int size = sc.nextInt();
+		int[] intArray = new int[size];
+		for (int i = 0; i < size; i++) {
+			intArray[i] = sc.nextInt();
+		}
+		int index = sc.nextInt();
+		System.out.println(intArray[index]);
+		
+	}
+	catch(ArrayIndexOutOfBoundsException e){
+		System.out.println("Array index out of bound.");
+	}
+	
+	try
+        {
+        int a=sc.nextInt();
+        int b=sc.nextInt();
+            int  c= a/b;
+            System.out.println(c);
+        }
+	catch(ArithmeticException e){
+	    System.out.println(e);
+	}
+	
+	try {
+			String str = null;
+			int index = sc.nextInt();
+			System.out.println(str);
+			System.out.println(str.charAt(index));
+		}
+	catch(NullPointerException n){
+	    System.out.println(n);
+	}
+}
+}
+
+
+--------------------------------------------------------------------
+
+
+//Write a program to read the Register Number and Mobile Number of a student. Create user defined exception and handle the following: 
+
+
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+class Main{
+
+    static void validate(String r, String n){
+        if(r.length() != 9){
+            System.out.println("Invalid");
+            throw new IllegalArgumentException("Register Number does not contain exactly 9 characters");
+        }
+        if(n.length() != 10){
+            System.out.println("Invalid");
+            throw new IllegalArgumentException("Mobile Number does not contain exactly 10 characters");
+        }
+
+        // String pattern = "^[6|7|8|9]{1}\\d{9}";
+        String pattern = "^[1-9]([0-9]){9,9}$";
+        Pattern a = Pattern.compile(pattern);
+        Matcher m1 = a.matcher(n);
+        if(!m1.find()){
+            System.out.println("Invalid");
+            throw new NumberFormatException("Mobile Number cannot contain any character other than a digit");
+        }
+
+        String pattern2 = "^[1-9][0-9]([A-Z]){3,3}([0-9]){4,4}$";
+        Pattern b = Pattern.compile(pattern2);
+        Matcher m2 = b.matcher(r);
+        if(!m2.find()){
+            System.out.println("Invalid");
+            throw new NoSuchElementException("Registration Number cannot contain any character other than digits and alphabets in format specified");
+        }
+
+    }
+
+    public static void main(String args[]){
+        Scanner sc = new Scanner(System.in);
+        String reg = sc.nextLine();
+        String no = sc.nextLine();
+        sc.close();
+        try {
+         validate(reg, no);
+         System.out.println("Valid");
+        }catch(Exception e)
+        {
+        	System.out.println(e);
+        }
+
+    }
+}
+
+------------------------------------------------------------------------------------
+
+//NullPointerException Another prominent exception is NullPointerException. It occurs when you try to access a null value. Assign null value to a string and obtain an index position and try to access it. Print the exception.
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+	public static void main(String [] args) {
+		Scanner sc = new Scanner(System.in);
+		try {
+			String str = null;
+			int index = Integer.parseInt(sc.nextLine());
+			System.out.println(str);
+			System.out.println(str.charAt(index));
+		}
+		catch(NullPointerException n) {
+			System.out.println(n);
+		}
+	}
+}
+
+
+---------------------------------------------------------------------------
+
+
+//Divide by zero exception. Write a program to obtain two numbers and print their quotient. In case of exception print the same.
+
+
+import java.util.Scanner;
+class Main
+{
+    public static void main(String[] args) 
+    {
+        Scanner sc=new Scanner(System.in);
+        try
+        {
+        int a=sc.nextInt();
+        int b=sc.nextInt();
+            int  c= a/b;
+            System.out.println(c);
+        } catch (Exception e)
+        {
+            System.out.println(e);
+        }
+    }
+}
+
+
+###############################################################################
+
+//						Polymorphism
+
+
+//Function Overloading Write a program to implement function overloading. Ram is given two or three inputs as an integer, if he has two integers then add the two numbers. If he has three inputs,then multiply the three numbers.
+
+import java.util.*;
+
+public class Main{
+    public int fun1(int a,int b,int c)
+    {
+        return a*b*c;
+    }
+    
+    public int fun1(int a,int b)
+    {
+        return a+b;
+    }
+    
+    public static void main(String[] args)
+    {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        if(n>3){
+            System.out.println("WRONG INPUT");
+        }
+        else{
+            if(n==2){
+                int a = sc.nextInt();
+                int b = sc.nextInt();
+                Main m = new Main();
+                System.out.println(m.fun1(a, b));
+            }
+            else{
+                int a = sc.nextInt();
+                int b = sc.nextInt();
+                int c = sc.nextInt();
+                Main m = new Main();
+                System.out.println(m.fun1(a, b, c));
+            }
+        }
+    }
+}
+
+
+--------------------------------------------------------------------
+
+//Write a Java program to implement constructor overloading. Create a student class with properties like name, dept, and college. Create a parametrized constructor such that it takes all 3 values to create a student object or just name and dept to create a student object. Use appropriate constructors for object creation based on the data provided and print the student details.
+
+
+import java.util.*;
+
+class Student{
+    String name;
+    String dept;
+    String college;
+    
+    public Student(String name,String dept,String college){
+        this.name = name;
+        this.dept = dept;
+        this.college = college;
+    }
+    
+    public Student(String name,String dept){
+        this.name = name;
+        this.dept = dept;
+    }
+    
+    public void printStudentDetails(){
+        System.out.println("Name : "+ this.name);
+        System.out.println("Dept : "+ this.dept);
+        System.out.println("College : "+ this.college);
+    }
+}
+
+class Test {
+    public static void main(String args[]){
+        Scanner scan = new Scanner(System.in);
+        int n = scan.nextInt();
+        scan.nextLine(); // dummy
+        Student s1;
+        if(n == 2){
+            String name = scan.nextLine();
+            String dept = scan.nextLine();
+            s1 = new Student(name, dept);
+            s1.printStudentDetails();
+        }else if ( n == 3){
+            String name = scan.nextLine();
+            String dept = scan.nextLine();
+            String college = scan.nextLine();
+            s1 = new Student(name, dept, college);
+            s1.printStudentDetails();
+        }
+        
+        scan.close();
+    }
+}
+
+------------------------------------------------------------
+
+//METHOD OVERLOADING Create a class named 'Hello'. Define a method 'sayHello'
+
+import java.util.*;
+class Hello { 
+public String sayHello(){
+    return "Hello";
+}
+public String sayHello(String s){
+    return ("Hello "+s);
+}
+public static void main(String args[]) 
+    { 
+        Scanner in=new Scanner(System.in);
+        String str=in.nextLine();
+        Hello s = new Hello(); 
+        System.out.println(s.sayHello()); 
+        System.out.println(s.sayHello(str)); 
+    } 
+} 
+
+############################################################################
+
+//				Inheritance 2
+
+
+//Create multilevel inheritance with the below classes.
+
+import java.util.Scanner;
+
+class WorkerDetail{
+	int c,s;
+	String n;
+	float h;
+	void setSalary(int x, String y, int z){
+		c=x;
+		n=y;
+		s=z;
+	}
+	void showDetail(){
+		System.out.println("Code :"+ c);
+		System.out.println("Name : "+n);
+		System.out.println("Salary "+s);
+    }
+    void getHra(){
+    	h=(float)s*60/100;
+    	System.out.println("HRA :"+h);
+    }
+}
+
+class OfficerSal extends WorkerDetail {
+	float d;
+	void getDA(){
+		d=(float)s*98/100;
+		System.out.println("DA :"+d);
+	}
+}
+ 
+class ManagerSal extends OfficerSal{
+	float ca,g;
+	void getCA(){
+		ca=(float)s*20/100;
+		System.out.println("City Allowance :"+ca);
+	}
+	void getgross(){
+		g=s+h+d+ca;
+		System.out.println("Gross Salary :"+g);
+	}
+}
+class MultilevelMain{
+	public static void main(String args[]){
+		ManagerSal m=new ManagerSal();
+		Scanner myObj = new Scanner(System.in);
+		
+		int code = Integer.parseInt(myObj.nextLine());
+		String name =myObj.nextLine();
+		int sal =Integer.parseInt(myObj.nextLine());
+		
+		m.setSalary(code,name,sal);
+		
+		m.showDetail();
+		m.getHra();
+		m.getDA();
+		m.getCA();
+		m.getgross();
+	}
+}
+
+-----------------------------------------------------------------------
+
+//Considering the Banking Scenario, You have different types of accounts like Current Account, Savings Account which inherits the base class Account.
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Scanner;
+
+abstract class Account{
+	String name;
+	int number;
+	int balance;
+	Date startDate;
+	
+	public Account(String name, int number, int balance, Date startDate) {
+		this.name = name;
+		this.number = number;
+		this.balance = balance;
+		this.startDate = startDate;
+	}
+
+	abstract public double calculateInterest(Date dueDate);
+	
+}
+
+class CurrentAccount extends Account{
+	
+
+	public CurrentAccount(String name, int number, int balance, Date startDate) {
+		super(name, number, balance, startDate);
+	
+	}
+
+	public double calculateInterest(Date dueDate) {
+		
+		double interest;
+		interest = (balance * 5 * (monthsDifference(startDate, dueDate)/12))/100;
+		 
+		return interest;
+	}
+	
+	public int monthsDifference(Date startDate, Date endDate) {
+		Calendar c1 = new GregorianCalendar();
+		c1.setTime(startDate);
+		Calendar c2 = new GregorianCalendar();
+		c2.setTime(endDate);
+		int ans = (c2.get(c2.YEAR) - c1.get(c1.YEAR))*12;
+		ans += c2.get(c2.MONTH)-c1.get(c1.MONTH);
+		return ans;
+	}
+}
+
+class SavingsAccount extends Account{
+
+	
+	public SavingsAccount(String name, int number, int balance, Date startDate) {
+		super(name, number, balance, startDate);
+	
+	}
+
+	public double calculateInterest(Date dueDate) {
+		
+		double interest;
+		interest = (balance * 12 * (monthsDifference(startDate, dueDate)/12))/100;
+		 
+		return interest;
+	}
+	
+	public int monthsDifference(Date startDate, Date endDate) {
+		Calendar c1 = new GregorianCalendar();
+		c1.setTime(startDate);
+		Calendar c2 = new GregorianCalendar();
+		c2.setTime(endDate);
+		int ans = (c2.get(c2.YEAR) - c1.get(c1.YEAR))*12;
+		ans += c2.get(c2.MONTH)-c1.get(c1.MONTH);
+		return ans;
+	}
+	
+}
+
+class AccountsMain{
+	public static void main(String args[]) throws ParseException {
+		Scanner myObj = new Scanner(System.in);
+		
+		int type=Integer.parseInt(myObj.nextLine());
+		String name = myObj.nextLine();
+		int number=Integer.parseInt(myObj.nextLine());
+		int balance= Integer.parseInt(myObj.nextLine());
+		
+	    String dateString = myObj.nextLine();
+	    DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+	    Date startDate = formatter.parse(dateString);
+	    
+	    dateString = myObj.nextLine();
+	    Date dueDate = formatter.parse(dateString);
+	    
+	    if(type==1) {
+	    	SavingsAccount sObj = new SavingsAccount(name, number, balance, startDate);
+	    	System.out.println(sObj.calculateInterest(dueDate));
+	    }
+	    
+	    else {
+	    	CurrentAccount cObj = new CurrentAccount(name, number, balance, startDate);
+	    	System.out.println(cObj.calculateInterest(dueDate));
+	    }
+	    myObj.close(); 	 	
+	}
+	
+	
+}
+
+
+-----------------------------------------------------------------------------------
+
+
+//Bank Account A class that inherits another class and obtains all the latter's attributes and methods is called inheritance. The former is called Child class whilst the latter is called Parent class.
+
+import java.io.*;
+import java.util.*;
+class Account {
+	protected String accName;
+	protected String accNo;
+	protected String bankName;
+	public String getAccName() {
+		return accName;
+	}
+	public void setAccName(String accName) {
+		this.accName = accName;
+	}
+	public String getAccNo() {
+		return accNo;
+	}
+	public void setAccNo(String accNo) {
+		this.accNo = accNo;
+	}
+	public String getBankName() {
+		return bankName;
+	}
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+	protected void display() {
+		System.out.println(this.accName);
+		System.out.println(this.accNo);
+		System.out.println(this.bankName);
+	}
+}
+class CurrentAccount extends Account {
+private String tinNumber;
+
+public String getTinNumber() {
+	return tinNumber;
+}
+
+public void setTinNumber(String tinNumber) {
+	this.tinNumber = tinNumber;
+}
+public CurrentAccount() {
+	this.tinNumber = null;
+}
+public CurrentAccount(String accName,String accNo,String bankName,String tinNumber) {
+	this.accName = accName;
+	this.accNo = accNo;
+	this.bankName = bankName;
+	this.tinNumber = tinNumber;
+}
+public void display() {
+	System.out.println(this.accName);
+	System.out.println(this.accNo);
+	System.out.println(this.bankName);
+	System.out.println(tinNumber);
+}
+}
+class SavingsAccount extends Account {
+	private String orgName;
+	public SavingsAccount() {
+		this.accName = null;
+		this.accNo = null;
+		this.bankName = null;
+		this.orgName = null;
+	}
+	public SavingsAccount(String accName,String accNo,String bankName,String orgName) {
+		this.accName = accName;
+		this.accNo = accNo;
+		this.bankName = bankName;
+		this.orgName = orgName;
+	}
+	public String getOrgName() {
+		return orgName;
+	}
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+	public void display() {
+		System.out.println(this.accName);
+		System.out.println(this.accNo);
+		System.out.println(this.bankName);
+		System.out.println(orgName);
+	}
+}
+class Main {
+public static void main(String [] args) {
+	int n;
+	Scanner sc = new Scanner(System.in);
+	n = sc.nextInt();
+	SavingsAccount s = new SavingsAccount();
+	CurrentAccount c = new CurrentAccount();
+	if(n == 1) {
+		s.setAccName(sc.next());
+		s.setAccNo(sc.next());
+		s.setBankName(sc.next());
+		s.setOrgName(sc.next());
+		SavingsAccount s1 = new SavingsAccount(s.getAccName(),s.getAccNo(),s.bankName,s.getOrgName());
+		
+		s1.display();
+	}
+	if(n == 2) {
+		c.setAccName(sc.next());
+		c.setAccNo(sc.next());
+		c.setBankName(sc.next());
+		c.setTinNumber(sc.next());
+		CurrentAccount c1 = new CurrentAccount(c.accName,c.accNo,c.bankName,c.getTinNumber());
+		c1.display();
+	}
+}
+}
+
+
+##########################################################
+
+//					Inheritance 1
+
+
+//Account Details Multi-level inheritance means inheriting a class that has already inherited another. So before going to our application taking this fresh concept, let's try it out in a simple example first. 
+
+import java.io.*;
+import java.util.*;
+class Account {
+	protected String accountNumber;
+	protected double balance;
+	protected String accountHoldername;
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+	public double getBalance() {
+		return balance;
+	}
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+	public String getAccountHoldername() {
+		return accountHoldername;
+	}
+	public void setAccountHoldername(String accountHoldername) {
+		this.accountHoldername = accountHoldername;
+	}
+	
+}
+class SavingAccount extends Account {
+	protected double minimumBalance;
+
+	public double getMinimumBalance() {
+		return minimumBalance;
+	}
+
+	public void setMinimumBalance(double minimumBalance) {
+		this.minimumBalance = minimumBalance;
+	}
+}
+class FixedAccount extends SavingAccount {
+	private int lockingPeriod;
+
+	public int getLockingPeriod() {
+		return lockingPeriod;
+	}
+
+	public void setLockingPeriod(int lockingPeriod) {
+		this.lockingPeriod = lockingPeriod;
+	}
+}
+class AccountBO {
+	public void getAccountDetail(String detail) {
+		String [] bank = detail.split(",");
+		System.out.format("%-20s %-10s %-20s %-20s %s\n","Account Number","Balance","Account holder name","Minimum balance","Locking period");
+		System.out.format("%-20s %-10s %-20s %-20s %s\n",bank[0],bank[1],bank[2],bank[3],bank[4]);
+	}
+}
+class Main {
+public static void main(String [] args) {
+	String detail;
+	Scanner sc = new Scanner(System.in);
+	detail = sc.nextLine();
+	AccountBO ab = new AccountBO();
+	ab.getAccountDetail(detail);
+	
+}
+}
+
+
+-----------------------------------------------------------------------
+
+//Overriding-simple Overriding is another concept that every application developer should know. Overriding is a runtime polymorphism. The inherited class has the overridden method which has the same name as the method in the parent class
+
+// You are using Java
+import java.util.*;
+import java.io.*;
+import java.text.DecimalFormat;
+class Event{
+    protected String name; 
+    protected String detail; 
+    protected String ownername;
+    public Event(String name,String detail,String ownername){
+        this.name=name;
+        this.detail=detail;
+        this.ownername=ownername;
+    }
+    public Event(){
+        this.name=null;
+        this.detail=null;
+        this.ownername=null;
+    }
+    public String getname(){
+        return name;
+    }
+    public void setname(String name){
+        this.name=name;
+    }
+    public String getdetail(){
+        return detail;
+    }
+    public void setdetail(String detail){
+        this.detail=detail;
+    }
+    public String getownername(){
+        return ownername;
+        
+    }
+    public void setownername(String ownername){
+        this.ownername=ownername;
+    }
+    public double projectrev(){
+        return 0.0;
+    }
+}
+class Exib extends Event{
+    public int nos;
+    public Exib(String name,String detail,String ownername,int nos){
+        super(name,detail,ownername);
+        this.nos=nos;
+        
+    }
+    public Exib(){
+        super();
+        this.nos=0;
+    }
+    public int getnos(){
+        return nos;
+    }
+    public void setnos(int nos){
+        this.nos=nos;
+    }
+    public double projectrev(){
+        return (double)(nos*10000);
+    }
+}
+class StageEvent extends Event{
+    public int nosh;
+    public int nosps;
+    public StageEvent(String name,String detail,String ownername,int nosh,int nosps){
+        super(name,detail,ownername);
+        this.nosh=nosh;
+        this.nosps=nosps;
+        
+    }
+    public StageEvent(){
+        super();
+        this.nosh=0;
+        
+    }
+    public int getnosh(){
+        return nosh;
+    }
+    public void setnosh(int nosh){
+        this.nosh=nosh;
+    }
+    public int getnosps(){
+        return nosps;
+    }
+    public void setnosps(int nosps){
+        this.nosps=nosps;
+    }
+    public double projectrev(){
+        return (double)(50*nosh*nosps);
+    }
+}
+class Main{
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        Event e= new Event();
+        e.name=sc.nextLine();
+        e.detail=sc.nextLine();
+        e.ownername=sc.nextLine();
+        Event e1=new Event(e.name,e.detail,e.ownername);
+        int n;
+        DecimalFormat dd= new DecimalFormat("0.0");
+        n=Integer.parseInt(sc.nextLine());
+        Exib x = new Exib();
+        StageEvent se = new StageEvent();
+        if(n==1)
+        {
+            x.nos=Integer.parseInt(sc.nextLine());
+            Exib e2=new Exib(e.name,e.detail,e.ownername,x.nos);
+            double result=x.projectrev();
+            System.out.println(dd.format(result));
+        }
+        if(n==2)
+        {
+            se.nosh=Integer.parseInt(sc.nextLine());
+            se.nosps=Integer.parseInt(sc.nextLine());
+            StageEvent se1=new StageEvent(e.name,e.detail,e.ownername,se.nosh,se.nosps);
+            double result =se.projectrev();
+            System.out.println(dd.format(result));
+            
+        }
+        
+    }
+}
+
+--------------------------------------------------------------------------------
+
+//Write a program such that it should have three classes, Person and Student and the Main class where Person is the base class and Student is the derived class.
+
+
+// You are using Java
+import java.util.*;
+import java.io.*;
+class Person{
+    protected String fname;
+    protected String lname;
+    protected int idno;
+    Person(String fname,String lname,int identify){
+        this.fname=fname;
+        this.lname=lname;
+        this.idno=identify;
+    }
+    public void printPerson(){
+        System.out.println("Name: "+lname+" "+fname+"\nID: "+idno);
+    }
+    
+}
+class Student extends Person{
+    private int[] testscores;
+    public Student(String fname,String lname,int id,int []testscores)
+    {
+        super(fname,lname,id);
+        this.testscores=testscores;
+    }
+    char calculate(){
+        int i,sum=0,avg;
+        char grade;
+        for(i=0;i<testscores.length;i++){
+            sum+=testscores[i];}
+            avg=sum/testscores.length;
+            if(avg<=100 && avg>=90)
+                grade='O';
+            else if(avg>=80 && avg<90)
+                grade='E';
+            else if(avg>=70 && avg<80)
+                grade='A';
+            else if(avg>=55 && avg<70)
+                grade='P';
+            else if(avg>=40 && avg<55)
+                grade='D';
+            else
+                grade='T';
+            return grade;
+        
+    }
+    
+}
+class Main{
+    public static void main(String[] args){
+        Scanner sc= new Scanner(System.in);
+        String fname=sc.next();
+        String lname=sc.next();
+        int id = sc.nextInt();
+        int numscore=sc.nextInt();
+        int []testscores = new int[numscore];
+        for(int i=0;i<numscore;i++){
+            testscores[i]=sc.nextInt();
+            
+        }
+        sc.close();
+        Student s= new Student(fname,lname,id,testscores);
+        s.printPerson();
+        System.out.println("Grade: "+s.calculate());
+    }
+}
+
+############################################################################
+
+//				Interface
+
+//Write a program to count a minimum number of front moves to sort an array.
+
+// You are using Java
+import java.util.Scanner;
+
+interface MyInter{
+    abstract void CountMinMov(int[] A);
+}
+
+class Minimum implements MyInter{
+    public void CountMinMov(int[] A){
+        int a = A.length;
+        int i, count = 0, exe = a;
+        for(i=a-1;i>=0;i--){
+            if(A[i]==exe){
+                exe--;
+            }
+            count = exe;
+        }
+        System.out.println(count);
+    }
+}
+
+class Main{
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        int N = sc.nextInt();
+        int[] Arr = new int[N];
+        for(int i=0;i<N;i++){
+            Arr[i] = sc.nextInt();
+        }
+        Minimum obj = new Minimum();
+        obj.CountMinMov(Arr);
+    }
+}
+
+
+----------------------------------------------------------------
+
+//Create an interface rotate with the following three functions. void leftRotate(int arr[], int d, int n) ; //d=1 void leftRotatebyOne(int arr[], int n); void printArray(int arr[], int n) ;
+
+import java.util.Scanner;
+
+interface rotate{
+    abstract void leftRotate(int arr[], int d, int n);
+    abstract void leftRotatebyOne(int arr[], int n);
+    abstract void printArray(int arr[], int n);
+}
+
+class Main implements rotate{
+    public void leftRotate(int arr[], int d, int n){
+        if(d==1){
+            new Main().leftRotatebyOne(arr, n);
+        }
+    }
+    
+    public void leftRotatebyOne(int arr[], int n){
+        int temp = 0;
+        for(int i=1;i<n;i++){
+            temp = arr[i-1];
+            arr[i-1] = arr[i];
+            arr[i] = temp;
+        }
+        new Main().printArray(arr, n);
+    }
+    
+    public void printArray(int arr[], int n){
+        for(int i=0;i<n;i++){
+            System.out.print(arr[i]+" ");
+        }
+    }
+    
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] A = new int[n];
+        for(int i=0;i<n;i++){
+            A[i] = sc.nextInt();
+        }
+        new Main().leftRotate(A, 1, n);
+    }
+}
+
+----------------------------------------------------------------
+
+//Create an interface ShapeCalculator with the following method void calc(int n)
+
+
+import java.util.Scanner;
+
+interface ShapeCalculator{
+    abstract void calc(int n);
+}
+
+class Square implements ShapeCalculator{
+    public void calc(int s){
+        System.out.println((s*s)+" "+(4*s));
+    }
+}
+
+class Circle implements ShapeCalculator{
+    public void calc(int r){
+        System.out.printf("%.2f",(3.14*r*r));
+        System.out.printf(" %.2f",(2*3.14*r));
+    }
+}
+
+class Main{
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        new Square().calc(n);
+        new Circle().calc(n);
+    }
+}
+
+###################################################################
+
+//			Abstract 
+
+//Write a program to find the sum of divisors using the concept of abstract classes.
+
+// You are using Java
+import java.util.*;
+abstract class AbstractClass{
+    abstract void getValue(int n);
+    abstract int divisorSum(int n);
+}
+class Neo extends AbstractClass{
+    public int n;
+    void getValue(int n){
+        this.n=n;
+    }
+    int divisorSum(int n){
+        int sum=0;
+        
+        for(int i=1;i<=n;i++){
+            if(n%i==0){
+                sum+=i;
+            }
+        }
+        return sum;
+    }
+    public static void main(String args[]){
+        Scanner sc = new Scanner(System.in);
+        Neo n= new Neo();
+        int a=sc.nextInt();
+        System.out.println(n.divisorSum(a));
+    }
+}
+
+----------------------------------------------------------------------
+
+//Create abstract class marks with the following method void getPercentage();
+
+// You are using Java
+import java.util.*;
+abstract class marks{
+    abstract void getPercentage();
+}
+class A extends marks{
+    public double m1,m2,m3;
+    public A(double m1,double m2,double m3){
+        this.m1=m1;
+        this.m2=m2;
+        this.m3=m3;
+    }
+    void getPercentage(){
+        double ans = (m1+m2+m3)/3;
+        System.out.printf("%.2f\n",ans);
+        
+    }
+    
+}
+class B extends marks{
+    public double m1,m2,m3,m4;
+    public B(double m1,double m2,double m3,double m4){
+        this.m1=m1;
+        this.m2=m2;
+        this.m3=m3;
+        this.m4=m4;
+    }
+    void getPercentage(){
+        double ans = (m1+m2+m3+m4)/4;
+        System.out.printf("%.2f",ans);
+    }
+    
+}
+class Fool{
+    public static void main(String args[]){
+        Scanner sc = new Scanner(System.in);
+        A a1=new A(sc.nextDouble(),sc.nextDouble(),sc.nextDouble());
+        B b1=new B(sc.nextDouble(),sc.nextDouble(),sc.nextDouble(),sc.nextDouble());
+        a1.getPercentage();
+        b1.getPercentage();
+    }
+        
+}
+
+--------------------------------------------------------------------
+
+//Create an abstract class Shape with the following methods abstract void rectangleArea(); abstract void squareArea(); abstract void circleArea();
+
+// You are using Java
+import java.util.*;
+abstract class Shape{
+    abstract void recArea();
+    abstract void sqArea();
+    abstract void circleArea();
+}
+class Area extends Shape{
+    int l,b,s;
+    double r;
+    public Area(int l,int b,int s,double r){
+        this.l=l;
+        this.b=b;
+        this.s=s;
+        this.r=r;
+        
+    }
+    void recArea(){
+        System.out.println((int) l*b);
+    }
+    void sqArea(){
+        System.out.println((int) s*s);
+    }
+    void circleArea(){
+        System.out.printf("%.2f",Math.PI*r*r);
+    }
+}
+class Main{
+    public static void main(String args[]){
+        Scanner sc = new Scanner(System.in);
+        Area a = new Area(sc.nextInt(),sc.nextInt(),sc.nextInt(),sc.nextDouble());
+        a.recArea();
+        a.sqArea();
+        a.circleArea();
+    }
+}
+
+#########################################################################################
+
+//					Classes and Methods
+
+//Create two classes a Box class and a Main class, create an object for the Box class in the Main class, and calculate the volume of the box.
+
+// You are using Java
+import java.util.*;
+class Box{
+    double width;
+    double height;
+    double depth;
+}
+class Main{
+    public static void main(String args[]){
+        Box mybox= new Box();
+        double vol;
+        Scanner sc = new Scanner(System.in);
+        mybox.width=sc.nextDouble();
+        mybox.height=sc.nextDouble();
+        mybox.depth=sc.nextDouble();
+        if(mybox.width>0 && mybox.height>0 && mybox.depth>0){
+            vol=mybox.width *mybox.height *mybox.depth;
+            System.out.format("%.2f",vol);
+            
+        }
+        else
+        {
+            System.out.print("Invalid");
+        }
+        
+    }
+}
+
+-----------------------------------------------------------------
+
+//Create a class with two methods one to read the elements of an array and the other to find all pairs of elements in an array whose sum is equal to a specified number.
+
+// You are using Java
+import java.io.*;
+import java.util.*;
+class Main{
+    public static void printArray(int arr[],int n,int sum){
+        int i,j,s=0;
+        for (i=0;i<n;i++){
+            for(j=0;j<n;j++){
+                if(arr[i]+arr[j]==sum)
+                {
+                    System.out.print(arr[i]+" "+arr[j]);
+                    System.out.println();
+                    s++;
+                }
+            }
+        }
+        if(s==0) System.out.println("There is no pairs for the given sum.");
+    }
+    public static void main(String args[]){
+        int n,i;
+        Scanner sc = new Scanner(System.in);
+        n=sc.nextInt();
+        int arr[]=new int[n];
+        for(i=0;i<n;i++){
+            arr[i]=sc.nextInt();
+        }
+        int sum=sc.nextInt();
+        printArray(arr,n,sum);
+    }
+}
+
+---------------------------------------------------------
+
+//BO Classes We can use a BO class for computational purposes. The Stall owners wanted to calculate the total cost of a particular item type for the given timeline. So add a feature in the application to calculate the total cost for the given timeline.
+
+// You are using Java
+import java.io.*;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.util.*;
+class ItemType{
+    public String name;
+    public double deposit;
+    public double costPerDay;
+    public String getName(){
+        return name;
+    }
+    public void setName(String name){
+        this.name=name;
+    }
+    public double getDeposit(){
+        return deposit;
+        
+    }
+    public void setDeposit(double deposit){
+        this.deposit = deposit;
+    }
+    public double getcostPerDay(){
+        return costPerDay;
+    }
+    public void setcostPerDay(double costPerDay){
+        this.costPerDay=costPerDay;
+    }
+    public ItemType()
+    {
+        this.name=null;
+        this.deposit=0;
+        this.costPerDay=0;
+        
+        
+    }
+    public ItemType(String name, Double deposit, Double costPerDay){
+        this.name=name;
+        this.deposit=deposit;
+        this.costPerDay=costPerDay;
+        System.out.println(this.name);
+        System.out.println(this.deposit);
+        System.out.println(this.costPerDay);
+    }
+}
+class ItemTypeBO{
+    public Double calculateCost(Date start,Date end,ItemType typeIns){
+        long diff=(start.getTime()-end.getTime())/86400000;
+        double result = diff*typeIns.costPerDay;
+        return result;
+    }
+}
+class Main{
+    public static void main(String args[]) throws ParseException {
+        ItemType i=new ItemType();
+        Scanner s=new Scanner(System.in);
+        DecimalFormat dd= new DecimalFormat("0.0");
+        i.name=s.nextLine();
+        i.deposit=Double.parseDouble(s.nextLine());
+        i.costPerDay=Double.parseDouble(s.nextLine());
+        String date1= s.nextLine();
+        String date2= s.nextLine();
+        ItemType i1=new ItemType(i.name,i.deposit,i.costPerDay);
+        Date start= new SimpleDateFormat("dd/MM/yyyy").parse(date1);
+        Date end= new SimpleDateFormat("dd/MM/yyyy").parse(date2);
+        ItemTypeBO obj=new ItemTypeBO();
+        double result=obj.calculateCost(start,end,i1);
+        System.out.println(dd.format(Math.abs(result)));
+    }
+}
+
+-------------------------------------------------------------------------
+
+//Write a program to check whether the given character is a vowel or consonant.Create two methods namely main method and alph. Create an object in the main method and access the alph method, that performs the above operation.
+
+// You are using Java
+import java.util.*;
+class Main{
+    void alph(char ch){
+        if(ch=='a'||ch=='e'||ch=='i'||ch=='o'||ch=='u')
+            System.out.println(ch+" :vowel");
+        else
+            System.out.println(ch+" :consonant");
+    }
+    public static void main(String args[]){
+        char ch;
+        Scanner sc=new Scanner(System.in);
+        ch=sc.next().charAt(0);
+        Main obj=new Main();
+        obj.alph(ch);
+    }
+}
+
+---------------------------------------------------------------------
+
+//Create a class NumberConverter with the required methods to convert between four major number systems (Decimal, Binary, Octal, and Hexadecimal).
+
+
+// You are using Java
+import java.util.*;
+class NumberConverter{
+    public String converter(String number,int sBase,int dBase)
+    {
+        return Integer.toString(Integer.parseInt(number,sBase),dBase);
+    }
+}
+class Main{
+    public static void main(String args[]){
+        NumberConverter number=new NumberConverter();
+        Scanner s=new Scanner(System.in);
+        char sBase = s.nextLine().charAt(0);
+        char dBase = s.nextLine().charAt(0);
+        String input= s.nextLine();
+        if((sBase=='B') || (sBase=='b'))
+            sBase=2;
+        if((dBase=='B') || (dBase=='b'))
+            dBase=2;
+        if((sBase=='D') || (sBase=='D'))
+            sBase=10;
+        if((dBase=='D') || (dBase=='D'))
+            dBase=10;
+        if((sBase=='O') || (sBase=='o'))
+            sBase=8;
+        if((dBase=='O') || (dBase=='o'))
+            dBase=8;
+        if((sBase=='H') || (sBase=='h'))
+            sBase=16;
+        if((dBase=='H') || (dBase=='h'))
+            dBase=16;
+            
+        System.out.println(number.converter(input,sBase,dBase));
+    }
+}
+
+-------------------------------------------------------------------------
+
+
