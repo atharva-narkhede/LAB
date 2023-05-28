@@ -1,21 +1,30 @@
 org 100h
-
-section .data
-    n dw 5       ; Number for which factorial will be calculated
-    result dw ?  ; Variable to store the factorial result
-
-section .text
-    mov ax, [n]        ; Move the value of n into AX register
-    mov bx, ax         ; Copy the value of n into BX register (for decrementing)
-    mov cx, 1          ; Initialize CX to 1 (counter for factorial multiplication)
-
-    loop_start:
-        mul cx         ; Multiply AX by CX (AX = AX * CX)
-        loop loop_start ; Decrement CX and loop until CX becomes zero
-
-    mov [result], ax   ; Store the factorial result in the result variable
-
-    mov ah, 4Ch        ; Function to terminate the program
-    int 21h            ; Terminate the program
-
-end
+.data
+x db "Input: $"
+y db " The Factorial is $"
+.code
+mov dx,offset x
+mov ah,9h
+int 21h
+mov ah, 1h
+int 21h
+sub al,30h
+mov bl, al
+mov dl, al
+mov dh, 0h
+mov cx, dx
+dec cx
+l1:
+dec dl
+mul dl
+loop l1
+mov bl, al
+mov dx,offset y
+mov ah, 9h
+int 21h
+mov dh, 0h
+mov dl, bl
+add dl, 48
+mov ah, 2h
+int 21h
+hlt
