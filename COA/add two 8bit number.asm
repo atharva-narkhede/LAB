@@ -1,23 +1,20 @@
 org 100h
+.data
+num1 db 10
+num2 db 20
+sum  db 0
+.code
+mov ax, @data
+mov ds, ax
+mov al, num1
+add al, num2
+mov sum, al
+hlt
 
-section .data
-    num1 db 45h
-    num2 db 27h
-    result db ?
+------------------------------
 
-section .text
-    mov al, [num1]
-    add al, [num2]
-    mov [result], al
-
-    mov dl, [result]
-    add dl, 30h
-
-    mov ah, 02h
-    mov dl, [result]
-    int 21h
-
-    mov ah, 4Ch
-    int 21h
-
-end
+org 100h
+.code
+mov al, 10   
+add al, 20   
+hlt          
